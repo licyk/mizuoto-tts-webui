@@ -1,6 +1,6 @@
-mizuoto>=0.2.0
-# 许可证受限的引擎 (Fish Audio Research License / bilibili Model Use License), 与 mizuoto 一同发布且版本号相同, 更新时三者保持一致
-mizuoto-fishspeech>=0.2.0
-mizuoto-indextts>=0.2.0
+mizuoto>=0.2.2
+# 许可证受限的引擎 (Fish Audio Research License / bilibili Model Use License), 各包最低版本以 PyPI 实际发布版本为准
+mizuoto-fishspeech>=0.2.1
+mizuoto-indextts>=0.2.1
 gradio-tunneling>=0.9.0
 requests
