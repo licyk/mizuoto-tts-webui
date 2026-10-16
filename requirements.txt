@@ -1,4 +1,4 @@
-mizuoto>=0.2.4
+mizuoto>=0.2.5
 # 许可证受限的引擎 (Fish Audio Research License / bilibili Model Use License), 各包最低版本以 PyPI 实际发布版本为准
 mizuoto-fishspeech>=0.2.1
 mizuoto-indextts>=0.2.1
