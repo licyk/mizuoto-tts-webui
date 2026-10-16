@@ -1,0 +1,120 @@
+<div align="center">
+
+# Mizuoto TTS WebUI
+
+_[Mizuoto](https://github.com/licyk/Mizuoto) 一键启动器_
+
+</div>
+
+- [简介](#简介)
+- [安装](#安装)
+  - [准备](#准备)
+  - [下载并启动](#下载并启动)
+- [启动参数](#启动参数)
+- [许可证受限的引擎](#许可证受限的引擎)
+- [常见问题](#常见问题)
+- [许可证](#许可证)
+
+## 简介
+
+Mizuoto TTS WebUI 会自动完成 Mizuoto 的运行环境配置并启动 WebUI:
+
+1. 检查 PyTorch, 未安装时根据显卡 (NVIDIA / AMD / Intel) 和系统自动安装对应版本的 PyTorch
+2. 检查并安装 `requirements.txt` 中的依赖 (包括 Mizuoto)
+3. 检查并安装使用 `--engines` 指定的许可证受限的引擎 (可选)
+4. 启动 Mizuoto WebUI, 并在浏览器中打开
+
+所有数据 (设置, 数据库, 模型, 音色和输出) 保存在项目的 `data` 文件夹中, Python 环境保存在 `venv` 文件夹中。
+
+## 安装
+
+此方式支持 Windows、Linux 和 macOS。
+
+### 准备
+
+安装以下软件:
+
+- [Git](https://git-scm.com/downloads)
+- [Python](https://www.python.org/downloads/) 3.10 ~ 3.13 (Windows 上安装时勾选 `Add python.exe to PATH`)
+
+### 下载并启动
+
+使用 Git 下载项目:
+
+```bash
+git clone https://github.com/licyk/mizuoto-tts-webui
+cd mizuoto-tts-webui
+```
+
+然后运行启动脚本:
+
+| 系统 | 启动方式 |
+| --- | --- |
+| Windows | 双击 `start.bat`, 或在 PowerShell 中运行 `./start.ps1` |
+| Linux / macOS | 在终端中运行 `./start.sh` |
+
+首次启动时会创建虚拟环境并下载 PyTorch 和 Mizuoto, 需要等待一段时间。之后再运行启动脚本即可直接启动。
+
+## 启动参数
+
+启动参数可以直接加在启动脚本后面, 如 `./start.sh --port 7870 --no-browser`。
+
+| 参数 | 说明 |
+| --- | --- |
+| `--data-dir <路径>` | Mizuoto 数据目录 (默认为项目中的 `data` 文件夹) |
+| `--config-dir <路径>` | 保存 `settings.toml` 的目录 (默认为数据目录) |
+| `--host <地址>` | 监听地址 (默认为 `127.0.0.1`), 设为 `0.0.0.0` 等非本机地址时可被其他设备访问 |
+| `--port <端口>` | 监听端口 (默认为 `7869`), 端口被占用时尝试下一个端口 |
+| `--strict-port` | 端口被占用时直接退出 |
+| `--access-token <令牌>` | 访问令牌 (可选), 设置后访问 WebUI 时需要输入 |
+| `--api-prefix <路径>` | 将 API 和 WebUI 挂载到指定路径下, 如 `/tts` |
+| `--no-browser` | 启动后不自动打开浏览器 |
+| `--share` | 使用 Gradio 内网穿透生成公网访问地址 (有效期 72 小时) |
+| `--proxy <地址>` | 手动指定代理地址, 如 `http://127.0.0.1:7890` (默认自动读取系统代理) |
+| `--disable-proxy` | 禁用自动设置代理 |
+| `--skip-check` | 跳过运行环境的依赖检查 |
+| `--torch-backend <类型>` | 安装 PyTorch 时使用的类型: `auto` (默认), `cuda`, `rocm`, `xpu`, `mps`, `cpu` |
+| `--reinstall-torch` | 重新安装 PyTorch, 可与 `--torch-backend` 一起使用 |
+| `--index-url <地址>` | 安装项目依赖和引擎时使用的 PyPI 镜像 (不影响 PyTorch 的安装) |
+| `--engines <引擎>...` | 安装许可证受限的引擎: `fishspeech`, `indextts`, 可指定多个 |
+| `--debug` | 启用 Debug 日志 |
+| `--version` | 显示版本信息 |
+
+## 许可证受限的引擎
+
+Fish Speech 和 IndexTTS 使用非自由许可证 (Fish Audio Research License / bilibili Model Use License), 默认不安装。需要时使用 `--engines` 安装, 如:
+
+```bash
+./start.sh --engines fishspeech indextts
+```
+
+安装后, 下载这些引擎的模型前需要在 WebUI 中阅读并接受对应的许可证。安装过的引擎在之后的启动中会被自动检查, 并在 Mizuoto 更新后安装相同版本的引擎, 不需要每次都加上 `--engines`。
+
+## 常见问题
+
+**自动选择的 PyTorch 类型不正确**
+
+使用 `--reinstall-torch --torch-backend <类型>` 重新安装 PyTorch, 如 `./start.sh --reinstall-torch --torch-backend cuda`。启动后可在 WebUI 的 Settings › Compute 中检查 PyTorch 与显卡是否匹配。
+
+**NVIDIA 显卡使用了 CPU 版本的 PyTorch**
+
+CUDA 13.0 版本的 PyTorch 需要 580 及以上版本的显卡驱动, 驱动过旧时会依次回退到 CUDA 12.8 / 12.6 版本, 更旧的驱动只能使用 CPU 版本。更新显卡驱动后使用 `--reinstall-torch` 重新安装 PyTorch。
+
+**代理设置**
+
+启动时会在检查依赖前自动设置代理: 使用 `--proxy` 指定的代理; 未指定时使用环境变量 `HTTP_PROXY` / `HTTPS_PROXY` 中已有的代理; 都没有时读取系统代理 (Windows 系统设置, Linux 的 GNOME / KDE 设置, macOS 系统设置), 能连接到代理服务器时才会使用。系统代理为 SOCKS 代理时不会自动使用, 请使用 `--proxy` 指定 HTTP 代理。不需要代理时使用 `--disable-proxy` 禁用。
+
+**GPT-SoVITS 无法合成日语 / 韩语**
+
+GPT-SoVITS 的日语和韩语前端是 Mizuoto 的可选依赖, 默认不安装。在项目目录中激活虚拟环境后手动安装:
+
+```bash
+pip install "mizuoto[gptsovits-ja]"   # 日语, 需要 CMake 和 C++ 编译器
+pip install "mizuoto[gptsovits-ko]"   # 韩语
+```
+
+更多使用说明请参考 [Mizuoto 文档](https://github.com/licyk/Mizuoto)。
+
+## 许可证
+
+本项目使用 [GNU General Public License v3.0](LICENSE) (GPL-3.0) 发布。你可以在 GPL-3.0 条款下使用、复制、修改和分发本项目; 分发修改版本时, 请遵守 GPL-3.0 的源代码开放和许可证保留要求。
