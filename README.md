@@ -20,9 +20,8 @@ _[Mizuoto](https://github.com/licyk/Mizuoto) 一键启动器_
 Mizuoto TTS WebUI 会自动完成 Mizuoto 的运行环境配置并启动 WebUI:
 
 1. 检查 PyTorch, 未安装时根据显卡 (NVIDIA / AMD / Intel) 和系统自动安装对应版本的 PyTorch
-2. 检查并安装 `requirements.txt` 中的依赖 (包括 Mizuoto)
-3. 检查并安装使用 `--engines` 指定的许可证受限的引擎 (可选)
-4. 启动 Mizuoto WebUI, 并在浏览器中打开
+2. 检查并安装 `requirements.txt` 中的依赖 (包括 Mizuoto 及所有引擎)
+3. 启动 Mizuoto WebUI, 并在浏览器中打开
 
 所有数据 (设置, 数据库, 模型, 音色和输出) 保存在项目的 `data` 文件夹中, Python 环境保存在 `venv` 文件夹中。
 
@@ -75,20 +74,13 @@ cd mizuoto-tts-webui
 | `--skip-check` | 跳过运行环境的依赖检查 |
 | `--torch-backend <类型>` | 安装 PyTorch 时使用的类型: `auto` (默认), `cuda`, `rocm`, `xpu`, `mps`, `cpu` |
 | `--reinstall-torch` | 重新安装 PyTorch, 可与 `--torch-backend` 一起使用 |
-| `--index-url <地址>` | 安装项目依赖和引擎时使用的 PyPI 镜像 (不影响 PyTorch 的安装) |
-| `--engines <引擎>...` | 安装许可证受限的引擎: `fishspeech`, `indextts`, 可指定多个 |
+| `--index-url <地址>` | 安装项目依赖时使用的 PyPI 镜像 (不影响 PyTorch 的安装) |
 | `--debug` | 启用 Debug 日志 |
 | `--version` | 显示版本信息 |
 
 ## 许可证受限的引擎
 
-Fish Speech 和 IndexTTS 使用非自由许可证 (Fish Audio Research License / bilibili Model Use License), 默认不安装。需要时使用 `--engines` 安装, 如:
-
-```bash
-./start.sh --engines fishspeech indextts
-```
-
-安装后, 下载这些引擎的模型前需要在 WebUI 中阅读并接受对应的许可证。安装过的引擎在之后的启动中会被自动检查, 并在 Mizuoto 更新后安装相同版本的引擎, 不需要每次都加上 `--engines`。
+Fish Speech 和 IndexTTS 使用非自由许可证 (Fish Audio Research License / bilibili Model Use License), 它们的软件包 (`mizuoto-fishspeech`, `mizuoto-indextts`) 会随 Mizuoto 一起安装。下载这些引擎的模型前需要在 WebUI 中阅读并接受对应的许可证, 使用时请遵守许可证的条款 (如 Fish Audio Research License 不允许商业使用)。
 
 ## 常见问题
 

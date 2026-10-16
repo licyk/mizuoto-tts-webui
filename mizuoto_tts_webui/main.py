@@ -144,7 +144,6 @@ def main() -> None:
                 backend=args.torch_backend,
                 reinstall_torch=args.reinstall_torch,
                 index_url=args.index_url,
-                engines=args.engines,
             )
         except (RuntimeError, FileNotFoundError) as e:
             logger.error("运行环境检查失败: %s", e)

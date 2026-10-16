@@ -3,8 +3,7 @@
 分为两个阶段:
 
 1. PyTorch: 未安装 (或版本低于 Mizuoto 的要求) 时根据显卡类型和系统安装对应的 PyTorch
-2. 项目依赖: 检查 requirements.txt 中的依赖 (包括 mizuoto) 及 mizuoto 自身声明的依赖, 缺失时进行安装
-3. 许可证受限的引擎: 检查使用 --engines 指定的引擎及已安装的引擎, 缺失或与 mizuoto 版本不一致时进行安装
+2. 项目依赖: 检查 requirements.txt 中的依赖 (包括 mizuoto 及其引擎) 及它们自身声明的依赖, 缺失时进行安装
 """
 
 import importlib
@@ -13,7 +12,6 @@ import sys
 
 from mizuoto_tts_webui.cmd_runner import run_cmd
 from mizuoto_tts_webui.config import (
-    ENGINE_PACKAGES,
     LOGGER_COLOR,
     LOGGER_LEVEL,
     LOGGER_NAME,
@@ -24,7 +22,6 @@ from mizuoto_tts_webui.config import (
 from mizuoto_tts_webui.gpu_detector import detect_torch_backend
 from mizuoto_tts_webui.logger import get_logger
 from mizuoto_tts_webui.package_analyzer import (
-    get_package_version_from_library,
     is_package_installed,
     validate_package_metadata_dependencies,
     validate_requirements,
@@ -38,6 +35,9 @@ logger = get_logger(
 
 TORCH_REQUIREMENT = f"torch>={TORCH_MIN_VERSION}"
 """Mizuoto 需要的 PyTorch 版本"""
+
+METADATA_CHECK_PACKAGES = ["mizuoto", "mizuoto-fishspeech", "mizuoto-indextts"]
+"""需要检查自身声明的依赖是否完整的软件包"""
 
 
 def pip_install(
@@ -97,7 +97,7 @@ def check_pytorch(
 
 
 def _requirements_satisfied() -> bool:
-    """检查项目依赖及 mizuoto 自身声明的依赖是否完整
+    """检查项目依赖及 mizuoto 和引擎自身声明的依赖是否完整
 
     Returns:
         bool:
@@ -105,8 +105,8 @@ def _requirements_satisfied() -> bool:
     """
     if not validate_requirements(REQUIREMENTS_PATH):
         return False
-    # requirements.txt 只记录顶层依赖, mizuoto 的依赖缺失 / 损坏时也需要重新安装
-    return validate_package_metadata_dependencies("mizuoto")
+    # requirements.txt 只记录顶层依赖, mizuoto 和引擎的依赖缺失 / 损坏时也需要重新安装
+    return all(validate_package_metadata_dependencies(package) for package in METADATA_CHECK_PACKAGES)
 
 
 def check_requirements(
@@ -142,77 +142,12 @@ def check_requirements(
     logger.info("Mizuoto TTS WebUI 依赖安装完成")
 
 
-def _engines_satisfied(
-    requirements: dict[str, str],
-) -> bool:
-    """检查引擎软件包及其自身声明的依赖是否完整
-
-    Args:
-        requirements (dict[str, str]):
-            引擎软件包名称到版本要求的映射
-
-    Returns:
-        bool:
-            依赖完整时返回 True
-    """
-    return all(
-        is_package_installed(requirement) and validate_package_metadata_dependencies(package)
-        for package, requirement in requirements.items()
-    )
-
-
-def check_engines(
-    engines: list[str],
-    index_url: str | None = None,
-) -> None:
-    """检查许可证受限的引擎, 缺失或与 mizuoto 版本不一致时进行安装
-
-    需要在 mizuoto 安装完成后调用. 除了指定的引擎, 已安装的引擎也会被检查, 避免 mizuoto 更新后引擎版本不一致
-
-    Args:
-        engines (list[str]):
-            需要安装的引擎, 为 ``config.ENGINE_PACKAGES`` 中的键
-        index_url (str | None):
-            安装引擎时使用的 PyPI 镜像地址
-
-    Raises:
-        RuntimeError:
-            mizuoto 未安装或引擎安装失败时
-    """
-    packages = [
-        package for name, package in ENGINE_PACKAGES.items() if name in engines or get_package_version_from_library(package) is not None
-    ]
-    if not packages:
-        return
-
-    mizuoto_version = get_package_version_from_library("mizuoto")
-    if mizuoto_version is None:
-        raise RuntimeError("未安装 Mizuoto, 无法安装引擎")
-    # 引擎软件包与 mizuoto 一同发布, 版本号相同, mizuoto 不会检查引擎的版本
-    requirements = {package: f"{package}=={mizuoto_version}" for package in packages}
-
-    logger.info("检查引擎中: %s", ", ".join(packages))
-    if _engines_satisfied(requirements):
-        logger.info("引擎完整")
-        return
-
-    logger.info("安装引擎中")
-    args = list(requirements.values())
-    if index_url:
-        args += ["--index-url", index_url]
-    pip_install(*args)
-    if not _engines_satisfied(requirements):
-        raise RuntimeError("引擎安装后仍不完整, 请检查上方的 Pip 输出")
-    logger.info("引擎安装完成, 下载模型前需要在 WebUI 中接受引擎的许可证")
-
-
 def check_environment(
     backend: str = "auto",
     reinstall_torch: bool = False,
     index_url: str | None = None,
-    engines: list[str] | None = None,
 ) -> None:
-    """依次检查 PyTorch, 项目依赖和引擎
+    """依次检查 PyTorch 和项目依赖
 
     Args:
         backend (str):
@@ -220,9 +155,7 @@ def check_environment(
         reinstall_torch (bool):
             重新安装 PyTorch
         index_url (str | None):
-            安装项目依赖和引擎时使用的 PyPI 镜像地址
-        engines (list[str] | None):
-            需要安装的许可证受限的引擎
+            安装项目依赖时使用的 PyPI 镜像地址
 
     Raises:
         FileNotFoundError:
@@ -232,4 +165,3 @@ def check_environment(
     """
     check_pytorch(backend=backend, reinstall=reinstall_torch)
     check_requirements(index_url=index_url)
-    check_engines(engines=engines or [], index_url=index_url)

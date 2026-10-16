@@ -7,7 +7,6 @@ from mizuoto_tts_webui.config import (
     DATA_PATH,
     DEFAULT_SERVER_HOST,
     DEFAULT_SERVER_PORT,
-    ENGINE_PACKAGES,
     TORCH_BACKEND_CHOICES,
 )
 
@@ -58,14 +57,7 @@ def get_args_parser() -> argparse.ArgumentParser:
         "--torch-backend", choices=TORCH_BACKEND_CHOICES, default="auto", help="安装 PyTorch 时使用的类型 (默认为 auto, 根据显卡自动选择)"
     )
     env.add_argument("--reinstall-torch", action="store_true", help="重新安装 PyTorch, 可与 --torch-backend 一起使用")
-    env.add_argument("--index-url", type=str, default=None, help="安装项目依赖和引擎时使用的 PyPI 镜像地址 (不影响 PyTorch 的安装)")
-    env.add_argument(
-        "--engines",
-        nargs="+",
-        choices=list(ENGINE_PACKAGES),
-        default=[],
-        help="安装许可证受限的引擎 (使用非自由许可证, 下载模型前需要在 WebUI 中接受许可证), 可指定多个, 如 --engines fishspeech indextts",
-    )
+    env.add_argument("--index-url", type=str, default=None, help="安装项目依赖时使用的 PyPI 镜像地址 (不影响 PyTorch 的安装)")
 
     parser.add_argument("--debug", action="store_true", help="启用 Debug 日志")
     parser.add_argument("--version", action="store_true", help="显示版本信息")

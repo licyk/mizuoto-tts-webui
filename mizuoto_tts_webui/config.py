@@ -55,13 +55,3 @@ cuda / xpu / mps / cpu 使用 PyTorch 官方软件包索引, 与 mizuoto 文档 
 
 TORCH_BACKEND_CHOICES = ["auto", "cuda", "rocm", "xpu", "mps", "cpu"]
 """命令行可选的 PyTorch 类型"""
-
-ENGINE_PACKAGES: dict[str, str] = {
-    "fishspeech": "mizuoto-fishspeech",
-    "indextts": "mizuoto-indextts",
-}
-"""许可证受限的 Mizuoto 引擎及其软件包名称
-
-这些引擎使用非自由许可证 (Fish Audio Research License / bilibili Model Use License), 不在 requirements.txt 中,
-仅在使用 --engines 指定时安装. 引擎软件包与 mizuoto 使用相同的版本号
-"""
