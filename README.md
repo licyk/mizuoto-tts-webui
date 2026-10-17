@@ -8,10 +8,12 @@ _[Mizuoto](https://github.com/licyk/Mizuoto) 一键启动器_
 
 - [简介](#简介)
 - [安装](#安装)
-  - [准备](#准备)
-  - [下载项目](#下载项目)
-  - [方式一: 自动安装并启动](#方式一-自动安装并启动)
-  - [方式二: 手动安装并启动](#方式二-手动安装并启动)
+  - [方式一: 整合包安装 (仅支持 Windows)](#方式一-整合包安装-仅支持-windows)
+  - [方式二: 手动安装 (支持全平台)](#方式二-手动安装-支持全平台)
+    - [准备](#准备)
+    - [下载项目](#下载项目)
+    - [自动配置环境并启动](#自动配置环境并启动)
+    - [手动配置环境并启动](#手动配置环境并启动)
 - [启动参数](#启动参数)
 - [许可证受限的引擎](#许可证受限的引擎)
 - [常见问题](#常见问题)
@@ -25,22 +27,33 @@ Mizuoto TTS WebUI 会自动完成 Mizuoto 的运行环境配置并启动 WebUI:
 2. 检查并安装 `requirements.txt` 中的依赖 (包括 Mizuoto 及所有引擎)
 3. 启动 Mizuoto WebUI, 并在浏览器中打开
 
-所有数据 (设置, 数据库, 模型, 音色和输出) 保存在项目的 `data` 文件夹中, Python 环境保存在 `venv` 文件夹中。
+源码安装时, 所有数据 (设置, 数据库, 模型, 音色和输出) 保存在项目的 `data` 文件夹中, Python 环境保存在 `venv` 文件夹中。整合包的目录和启动方式以整合包说明为准。
 
 ## 安装
+
+### 方式一: 整合包安装 (仅支持 Windows)
+
+此方式仅支持 Windows, 下载整合包并解压后即可按照整合包说明使用。
+
+1. 打开 [SD WebUI All In One 项目](https://github.com/licyk/sd-webui-all-in-one)的 README, 找到并点击 **SD WebUI All In One 文档** 链接。
+2. 在文档中依次点击 **整合包与实用指南** → **整合包下载与使用**。
+3. 在该页面中找到 **Mizuoto TTS WebUI** 的说明, 也可以[直接打开该说明](https://licyk.github.io/sd-webui-all-in-one/portable/portable/#mizuoto-tts-webui)。
+4. 根据显卡选择对应的整合包下载按钮, 下载整合包并解压, 然后按照该说明启动和使用。
+
+### 方式二: 手动安装 (支持全平台)
 
 此方式支持 Windows、Linux 和 macOS。
 
 Mizuoto TTS WebUI 应运行在独立的虚拟环境中, 避免与其他应用的依赖冲突。可以使用启动脚本自动配置环境, 也可以按下面的步骤手动安装。
 
-### 准备
+#### 准备
 
 安装以下软件:
 
 - [Git](https://git-scm.com/downloads)
 - [Python](https://www.python.org/downloads/) 3.10 ~ 3.13 (Windows 上安装时勾选 `Add python.exe to PATH`)
 
-### 下载项目
+#### 下载项目
 
 使用 Git 下载项目:
 
@@ -49,7 +62,7 @@ git clone https://github.com/licyk/mizuoto-tts-webui
 cd mizuoto-tts-webui
 ```
 
-### 方式一: 自动安装并启动
+#### 自动配置环境并启动
 
 然后运行启动脚本:
 
@@ -60,7 +73,7 @@ cd mizuoto-tts-webui
 
 首次启动时会创建虚拟环境并下载 PyTorch 和 Mizuoto, 需要等待一段时间。之后再运行启动脚本即可直接启动。
 
-### 方式二: 手动安装并启动
+#### 手动配置环境并启动
 
 在项目目录中依次执行以下步骤:
 
@@ -109,7 +122,7 @@ cd mizuoto-tts-webui
    python launch.py
    ```
 
-   启动后会自动打开浏览器, 默认地址为 `http://127.0.0.1:7869`。之后激活同一个虚拟环境并运行 `python launch.py` 即可再次启动, 也可以使用方式一中的启动脚本。
+   启动后会自动打开浏览器, 默认地址为 `http://127.0.0.1:7869`。之后激活同一个虚拟环境并运行 `python launch.py` 即可再次启动, 也可以使用[自动配置环境并启动](#自动配置环境并启动)中的启动脚本。
 
 ## 启动参数
 
