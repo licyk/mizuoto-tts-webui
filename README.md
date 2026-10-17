@@ -13,7 +13,6 @@ _[Mizuoto](https://github.com/licyk/Mizuoto) 一键启动器_
     - [准备](#准备)
     - [下载项目](#下载项目)
     - [自动配置环境并启动](#自动配置环境并启动)
-    - [手动配置环境并启动](#手动配置环境并启动)
 - [启动参数](#启动参数)
 - [许可证受限的引擎](#许可证受限的引擎)
 - [常见问题](#常见问题)
@@ -44,7 +43,7 @@ Mizuoto TTS WebUI 会自动完成 Mizuoto 的运行环境配置并启动 WebUI:
 
 此方式支持 Windows、Linux 和 macOS。
 
-Mizuoto TTS WebUI 应运行在独立的虚拟环境中, 避免与其他应用的依赖冲突。可以使用启动脚本自动配置环境, 也可以按下面的步骤手动安装。
+启动脚本会自动创建独立的虚拟环境并安装依赖, 避免与其他应用的依赖冲突。
 
 #### 准备
 
@@ -72,57 +71,6 @@ cd mizuoto-tts-webui
 | Linux / macOS | 在终端中运行 `./start.sh` |
 
 首次启动时会创建虚拟环境并下载 PyTorch 和 Mizuoto, 需要等待一段时间。之后再运行启动脚本即可直接启动。
-
-#### 手动配置环境并启动
-
-在项目目录中依次执行以下步骤:
-
-1. 使用 Python 3.10 ~ 3.13 创建虚拟环境:
-
-   ```bash
-   python -m venv venv
-   ```
-
-   然后根据系统和终端激活环境:
-
-   | 系统 / 终端 | 激活命令 |
-   | --- | --- |
-   | Windows PowerShell | `.\venv\Scripts\Activate.ps1` |
-   | Windows CMD | `venv\Scripts\activate.bat` |
-   | Linux / macOS | `source venv/bin/activate` |
-
-   Linux / macOS 上若没有 `python` 命令, 创建环境时使用 `python3`。之后的命令都在激活了该环境的终端中执行。
-
-2. 按硬件选择一条命令安装 PyTorch (需要 2.8 及以上版本):
-
-   ```bash
-   # Windows / Linux, NVIDIA 显卡
-   python -m pip install torch==2.14.0 --index-url https://download.pytorch.org/whl/cu130
-   # Windows / Linux, AMD 显卡 (AMD 发布的 ROCm 构建)
-   python -m pip install "torch[device-all]==2.13.0+rocm10.0.0" --index-url https://stable.repo.amd.com/rocm/whl-next
-   # Windows / Linux, Intel 显卡
-   python -m pip install torch==2.14.0+xpu --index-url https://download.pytorch.org/whl/xpu
-   # macOS, Apple 芯片
-   python -m pip install torch==2.14.0
-   # 仅使用 CPU
-   python -m pip install torch==2.14.0 --index-url https://download.pytorch.org/whl/cpu
-   ```
-
-   NVIDIA 显卡的 CUDA 13.0 构建需要 580 及以上版本的驱动, 旧驱动的处理方式见[常见问题](#常见问题)。
-
-3. 安装项目依赖 (包括 Mizuoto 及所有引擎):
-
-   ```bash
-   python -m pip install -r requirements.txt
-   ```
-
-4. 启动 WebUI:
-
-   ```bash
-   python launch.py
-   ```
-
-   启动后会自动打开浏览器, 默认地址为 `http://127.0.0.1:7869`。之后激活同一个虚拟环境并运行 `python launch.py` 即可再次启动, 也可以使用[自动配置环境并启动](#自动配置环境并启动)中的启动脚本。
 
 ## 启动参数
 
