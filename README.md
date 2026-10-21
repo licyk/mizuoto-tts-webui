@@ -2,7 +2,7 @@
 
 # Mizuoto TTS WebUI
 
-_[Mizuoto](https://github.com/licyk/Mizuoto) 一键启动器_
+_基于 [Mizuoto](https://github.com/licyk/Mizuoto) 的多引擎语音合成、音色克隆与配音 WebUI_
 
 </div>
 
@@ -20,11 +20,16 @@ _[Mizuoto](https://github.com/licyk/Mizuoto) 一键启动器_
 
 ## 简介
 
-Mizuoto TTS WebUI 会自动完成 Mizuoto 的运行环境配置并启动 WebUI:
+Mizuoto TTS WebUI 基于 [Mizuoto](https://github.com/licyk/Mizuoto), 在同一个网页界面中使用 Qwen3-TTS、CosyVoice、F5-TTS、GPT-SoVITS、OmniVoice、VoxCPM、Fish Speech 和 IndexTTS 等语音合成引擎, 可用于文本朗读、音色克隆、有声书和多角色配音。
 
-1. 检查 PyTorch, 未安装时根据显卡 (NVIDIA / AMD / Intel) 和系统自动安装对应版本的 PyTorch
-2. 检查并安装 `requirements.txt` 中的依赖 (包括 Mizuoto 及所有引擎)
-3. 启动 Mizuoto WebUI, 并在浏览器中打开
+- **语音合成**: 输入文本并选择模型与音色生成语音; 根据模型能力使用多语言、风格指令、情感控制和流式播放。
+- **音色克隆与设计**: 使用参考音频克隆音色, 或通过文字描述设计音色; 在音色库中保存、导入和导出音色。具体能力取决于所选模型。
+- **多角色配音**: 为书籍、剧本或对话分配角色, 每个角色可使用不同的模型与音色; 支持逐句生成、修改后重新生成, 并导出音频和字幕。
+- **语音转换与编辑**: 使用 CosyVoice 转换音色, 或使用 F5-TTS 编辑指定片段的语音内容。
+- **数据集与模型微调**: 从录音、音频文件或合成结果建立数据集, 完成切分、自动转写和检查, 再按引擎支持的训练方式微调模型, 查看损失曲线并试听结果。
+- **模型与计算管理**: 统一下载和管理各引擎模型, 支持将引擎运行在远程主机上, 在本机管理音色和生成结果。
+
+项目提供自动配置运行环境和启动 WebUI 的脚本, 首次运行时会安装所需的 PyTorch 和项目依赖。
 
 源码安装时, 所有数据 (设置, 数据库, 模型, 音色和输出) 保存在项目的 `data` 文件夹中, Python 环境保存在 `venv` 文件夹中。整合包的目录和启动方式以整合包说明为准。
 
